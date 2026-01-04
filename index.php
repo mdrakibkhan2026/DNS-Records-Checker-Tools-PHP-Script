@@ -4,6 +4,7 @@
 // Designation: PHP Developer, Web Designer
 // Contact me: https://web.facebook.com/mark.rakib/
 // Website: https://horje.com
+// This Script written by Horje Admin
 
 ?>
 <!DOCTYPE html>
@@ -88,14 +89,141 @@
   <h3>Use a Domain</h3><br>
   
   
-    <form>
-    <input type="text" id="myInput" placeholder="Enter a domain" class="k9-margin-bottom">
+    <form action="" method="post">
+    <input type="text" id="myInput" name="data" placeholder="Enter a domain" class="k9-margin-bottom">
     <button id="myButton" class="k9-btn k9-ripple k9-green">DNS Records</button>
     </form>
     
+<br>
+
+<?php
+
+
+// fetch.php
+if (isset($_POST['data'])) {
+    $receivedData = htmlspecialchars($_POST['data']);
+    // Simulate some processing time
+    sleep(2); 
     
-       <div id="loadingSpinner" class="spinner"></div>
-    <div id="result"></div>
+// Start
+
+if (!empty($receivedData)) {
+
+function domain($url) {
+    $host = parse_url($url, PHP_URL_HOST);
+    // If the URL has no scheme, parse_url might fail. 
+    // This adds a default scheme to ensure proper parsing if needed.
+    if (!$host) {
+        $host = parse_url('http://' . $url, PHP_URL_HOST);
+    }
+    return $host;
+}
+
+$domain = domain($receivedData);
+
+    echo '<h3><p>DNS Records Status for '.$domain.':</p></h3>';
+
+
+    echo "  <div style='overflow-x:auto;'> <table class='table'>";
+    echo "<tr><th class='text-center'>Name</th><th class='text-center'>Status</th></tr>";
+    if(checkdnsrr($domain,"A")) {
+  echo "<tr><td>A Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>A Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+
+    if(checkdnsrr($domain,"MX")) {
+  echo "<tr><td>MX Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>MX Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+    if(checkdnsrr($domain,"NS")) {
+  echo "<tr><td>NS Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>NS Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+    if(checkdnsrr($domain,"SOA")) {
+  echo "<tr><td>SOA Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>SOA Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+    if(checkdnsrr($domain,"PTR")) {
+  echo "<tr><td>PTR Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>PTR Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+
+    if(checkdnsrr($domain,"CNAME")) {
+  echo "<tr><td>CNAME Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>CNAME Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+
+    if(checkdnsrr($domain,"AAAA")) {
+  echo "<tr><td>AAAA Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>AAAA Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+
+
+    if(checkdnsrr($domain,"A6")) {
+  echo "<tr><td>A6 Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>A6 Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+    if(checkdnsrr($domain,"SRV")) {
+  echo "<tr><td>SRV Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>SRV Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+
+    if(checkdnsrr($domain,"NAPTR")) {
+  echo "<tr><td>NAPTR Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>NAPTR Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+
+    if(checkdnsrr($domain,"TXT")) {
+  echo "<tr><td>TXT Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>TXT Record</td><td class='text-warning'>Failed</td></tr>";
+}
+
+
+    if(checkdnsrr($domain,"ANY")) {
+  echo "<tr><td>ANY Record</td><td class='text-success'>Passed</td></tr>";
+} else {
+  echo "<tr><td>ANY Record</td><td class='text-warning'>Failed</td></tr>";
+}
+echo '</table>';
+
+
+
+
+
+} else {
+    echo '<h3>
+    <p>Field Cannot empty !</p>
+  </h3>';    
+}
+
+
+    
+}
+
+
+?>
+
     
 </div><br>
 
@@ -104,50 +232,5 @@
 <footer class="container-fluid text-center">
   <p><a href="https://dnscheck.horje.com">Horje Tools</a> &copy; <?php echo date('Y'); ?></p>
 </footer>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const myInput = document.getElementById('myInput');
-    const myButton = document.getElementById('myButton');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const resultDiv = document.getElementById('result');
-
-    myButton.addEventListener('click', () => {
-        const inputValue = myInput.value;
-
-        // Show loading spinner
-        loadingSpinner.style.display = 'block';
-        myButton.disabled = true; // Disable button during loading
-
-        // Create a new XMLHttpRequest object
-        const xhr = new XMLHttpRequest();
-
-        // Configure the request
-        xhr.open('POST', 'data.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-        // Define what happens on successful data reception
-        xhr.onload = () => {
-            if (xhr.status === 200) {
-                resultDiv.innerHTML = xhr.responseText;
-            } else {
-                resultDiv.innerHTML = 'Error: ' + xhr.status;
-            }
-            // Hide loading spinner and re-enable button
-            loadingSpinner.style.display = 'none';
-            myButton.disabled = false;
-        };
-
-        // Define what happens in case of an error
-        xhr.onerror = () => {
-            resultDiv.innerHTML = 'Network error.';
-            loadingSpinner.style.display = 'none';
-            myButton.disabled = false;
-        };
-
-        // Send the request with the input value
-        xhr.send('data=' + encodeURIComponent(inputValue));
-    });
-});
-</script>
 </body>
 </html>
