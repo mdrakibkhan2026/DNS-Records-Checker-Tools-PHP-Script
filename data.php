@@ -1,6 +1,12 @@
 <?php
 
+// Name: Md. Rakib Khan
+// Designation: PHP Developer, Web Designer
+// Contact me: https://web.facebook.com/mark.rakib/
+// Website: https://horje.com
 
+?>
+<?php
 // fetch.php
 if (isset($_POST['data'])) {
     $receivedData = htmlspecialchars($_POST['data']);
